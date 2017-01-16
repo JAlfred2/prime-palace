@@ -1,0 +1,376 @@
+<!-- New version. Added a mod function. Added an Euler Totient function.
+The Euler Totient function features an improved algorithm.
+I had earlier created an Euler Totient function, not included in this app, but it only went up to 9000.
+This version goes up to more like 50,000.
+Of course, there may be a way to make it better, and I will continue working on it.
+-->
+
+<html>
+<head>
+<title>Prime Palace</title>
+<style>
+#container1{
+height: 100%;
+width: 100%;
+background-color: silver;
+}
+#container2{
+height: 100%;
+width: 50%;
+background: LightSteelBlue; /* For browsers that do not support gradients */
+background: -webkit-linear-gradient(left top, Azure, LightSteelBlue); /* For Safari 5.1 to 6.0 */
+background: -o-linear-gradient(bottom right, Azure, LightSteelBlue); /* For Opera 11.1 to 12.0 */
+background: -moz-linear-gradient(bottom right, Azure, LightSteelBlue); /* For Firefox 3.6 to 15 */
+background: linear-gradient(to bottom right, Azure, LightSteelBlue); /* Standard syntax */
+margin: auto;
+border-radius: 1em;
+text-align: center;
+font-family: "Trebuchet MS", Helvetica, sans-serif;
+text-shadow: .01em .01em gray;
+}
+#title{
+height: 19%;
+text-align: center;
+font-size: 4.2em;
+font-family: "Trebuchet MS", Helvetica, sans-serif;
+color: #343434;
+text-shadow: .02em .05em gray;
+margin-bottom: 0%;
+margin-top: 0%;
+}
+button{
+background: LightSteelBlue; /* For browsers that do not support gradients */
+background: -webkit-linear-gradient(left top, Azure, LightSteelBlue); /* For Safari 5.1 to 6.0 */
+background: -o-linear-gradient(bottom right, Azure, LightSteelBlue); /* For Opera 11.1 to 12.0 */
+background: -moz-linear-gradient(bottom right, Azure, LightSteelBlue); /* For Firefox 3.6 to 15 */
+background: linear-gradient(to bottom right, Azure, LightSteelBlue); /* Standard syntax */
+border: .045em solid DarkGrey;
+border-radius: .3em;
+height: 13%;
+width: 100%;
+text-align: center;
+float:left;
+font-size: 1.75em;
+font-family: "Trebuchet MS", Helvetica, sans-serif;
+-moz-box-shadow: 0 0 5px 5px #888;
+-webkit-box-shadow: 0 0 5px 5px#888;
+box-shadow: 0 0 3px 3px #888;
+margin: .009em;
+cursor: pointer;
+}
+button:hover{
+background-color: AntiqueWhite;
+opacity: 0.78;
+}
+button:active{
+background-color: white;
+}
+#input1{
+margin: auto;
+height: 12%;
+font-size: 3em;
+border-radius: .5em;
+}
+#input2{
+margin: auto;
+height: 12%;
+font-size: 3em;
+border-radius: .5em;
+}
+#out{
+font-size: 3.2em;
+height:55%;
+}
+#about{
+height: 1%;
+font-size: .7em;
+position:absolute;
+right:26%;
+cursor: pointer;
+}
+#backer{
+height: 1%;
+font-size: .7em;
+position:absolute;
+right:26%;
+cursor: pointer;
+}
+</style>
+</head>
+<body>
+<div id="container1">
+<div id="container2">
+<div id="about" onclick="about()">About</div>
+<p id="title">Prime Palace</p>
+<button id="primTest" onclick="primTest1()" onmouseover="this.innerHTML = 'Determines if a number is prime or not.'" onmouseout="this.innerHTML = 'Primality Test'">Primality Test</button>
+<button id="primFact" onmouseover="this.innerHTML = 'Breaks number into its prime factorization.'" onmouseout="this.innerHTML = 'Prime Factorization'" onclick="factorize1()">Prime Factorization</button>
+<button id="primBetw" onclick="primBetw1()" onmouseover="this.innerHTML = 'Counts primes between two numbers.'" onmouseout="this.innerHTML = 'Primes Between'">Primes Between</button>
+<button id="cheby" onclick="cheby1()" onmouseover="this.innerHTML = 'The sum of the log of each prime below a number.'" onmouseout="this.innerHTML = 'Chebyshev Function'">Chebyshev Function</button>
+<button id="mod" onclick="mod()" onmouseover="this.innerHTML = 'The remainder of a number being divided by another number.'" onmouseout="this.innerHTML = 'Mod Function'">Mod Function</button>
+<button id="etf" onclick="etf()" onmouseover="this.innerHTML = 'The number of positive integers less than input that do not share divisors with input.'" onmouseout="this.innerHTML = 'Euler Totient Function'">Euler Totient Function</button>
+
+</div>
+</div>
+<script>
+function about(){
+document.getElementById('container2').innerHTML = "<p>These are simple, bare-knuckle algorithms. Nothing fancy.</p><div id='backer' onclick='location.reload()'>Back</div><h4>Primality Test - </h4><p>Determines if it is prime or not.</p><h4>Prime Factorization - </h4><p>Finds the unique prime factorization from the Fund. Thm. of Arithmetic.</p><h4>Primes Between - </h4><p>Works best if the space between numbers is less than 100,000. That might decrease with bigger numbers.</p><h4>Chebyshev Function - </h4><p>The primorial of x is the product of each prime below x. The Chebyshev Function is the natural logarithm of that number. The limit of theta(x)/x as x goes to infinity is 1.</p><h4>Mod Function</h4><p>The remainder of a number if you divide it by something. For instance, 7 % 6 is 1.</p><h4>Euler Totient Function</h4><p>Gives the number of numbers greater than 0 but less than the input number that share no divisors with the input number. So, for instance, 4 shares 2 with 10, so it is not counted in 10's function. Also gives the divisor function. This goes to about 50,000.</p>";
+}
+
+function etf(){
+document.getElementById('container2').innerHTML = "<input id='input1' onkeypress = 'etf2(event)' /><div id='out'></div>";
+document.getElementById('container2').innerHTML += "<button id='back' onclick='location.reload()'>Back</button>";
+}
+
+function etf2(e){
+if(e.keyCode == 13){
+
+var x = document.getElementById('input1').value;
+var tCount = 1;
+var sCount = 0;
+var dCount = 0;
+var novisors = [];
+var divisors = [1, x];
+
+if(x == 1){
+document.getElementById('out').innerHTML = "&phi;(x) = 1";
+}
+
+else if(x > 1){
+for(var k = 2; k < x; k++){
+if(novisors.indexOf(k) != -1){
+
+}//if
+else{
+if(x % k == 0){
+for(var m = k; m < x; m += k){
+novisors.push(m);
+sCount++;
+if(x % m == 0 && divisors.indexOf(m) == -1){
+dCount++;
+divisors.push(m);
+}//if
+}//for
+}//if
+else{
+tCount++;
+}//else
+}//else
+}//for
+
+document.getElementById('out').innerHTML = "&phi;(x) = " + tCount;
+document.getElementById('out').innerHTML += "<br/>d(x) = " + divisors.length;
+document.getElementById('out').innerHTML += "<br/>&omega;(x) = " + dCount;
+
+}//elseif
+
+else{
+document.getElementById('out').innerHTML = "Improper data.";
+}
+
+}//e.keycode
+}//function
+
+
+function mod(){
+document.getElementById('container2').innerHTML = "<input id='input1' onkeypress = 'mod2(event)' /><input id='input2' /><div id='out'></div>";
+document.getElementById('container2').innerHTML += "<button id='back' onclick='location.reload()'>Back</button>";
+}
+
+function mod2(e){
+if(e.keyCode == 13){
+var x = document.getElementById('input1').value;
+var k = document.getElementById('input2').value;
+
+var xmk = x % k;
+
+document.getElementById('out').innerHTML = xmk;
+
+}
+}
+
+function cheby1(){
+document.getElementById('container2').innerHTML = "<input id='input1' onkeypress = 'cheby2(event)' /><div id='out'></div>";
+document.getElementById('container2').innerHTML += "<button id='back' onclick='location.reload()'>Back</button>";
+}
+
+function cheby2(e){
+if(e.keyCode == 13){
+var x = document.getElementById('input1').value;
+var xa = x;
+var xb = x;
+//var y = 0;
+//var yb = 0;
+//var ya = performance.now();
+document.getElementById('input1').innerHTML = "";
+document.getElementById('out').innerHTML = "";
+var runSum = 0;
+var primeCounter = 0;
+while(xb > 1){
+xa = xb;
+var primeChecker = 0;
+
+for(var n = 2; n <= xa; n++){
+if(xa % n == 0){
+primeChecker++;
+//document.getElementById('out').innerHTML += n + " divides " + xa + " ";
+xa = xa / n;
+n--;
+}
+}
+//var pArray = [];
+if(primeChecker == 1){
+primeCounter++;
+runSum += Math.log(n);
+
+if(n == 2){
+
+//pArray.push(n);
+//document.getElementById('out').innerHTML += "ln(" + n + ")"
+document.getElementById('out').innerHTML += "<br>&theta;(x) = " + runSum;
+document.getElementById('out').innerHTML += "<br>There are " + primeCounter + " primes below " + x + ".";
+//yb = performance.now()
+//y = yb - ya;
+//document.getElementById('out').innerHTML += "<br>Time " + y;
+
+}
+else{
+//document.getElementById('out').innerHTML += "ln(" + n + ") + ";
+//pArray.push(n);
+}
+}
+xb--;
+}
+
+}
+}
+
+function primBetw1(){
+document.getElementById('container2').innerHTML = "<input id='input1' /><input id='input2' onkeypress = 'primBetw2(event)' /><div id='out'></div>";
+document.getElementById('container2').innerHTML += "<button id='back' onclick='location.reload()'>Back</button>";
+}
+
+function primBetw2(e){
+if(e.keyCode == 13){
+
+document.getElementById('out').innerHTML = "";
+var x1 = document.getElementById('input1').value;
+var x2 = document.getElementById('input2').value;
+var primeCounter = 0;
+
+if(x1 < 0 || x2 < x1 || x2 < 1){
+document.getElementById('out').innerHTML = "Improper data.";
+}
+else{
+document.getElementById('out').innerHTML = "Primes between " + x1 + " and " + x2 + ":";
+
+
+while(x2 >= x1){
+var primeChecker = 0;
+var x = x2;
+if(x % 30 == 1 || x % 30 == 7 || x % 30 == 11 || x % 30 == 13 || x % 30 == 17 || x % 30 == 19 || x % 30 == 23 || x % 30 == 29){
+for(var n = 7; n <= x; n++){
+if(x % n == 0){
+primeChecker++;
+x = x / n;
+n--;
+}
+}
+
+if(primeChecker == 1){
+primeCounter++;
+}
+}
+else if(x == 2 || x == 3 || x ==5){
+primeCounter++;
+}
+else{
+//not prime
+}
+x2--;
+}
+
+
+
+document.getElementById('out').innerHTML += "<br>There are " + primeCounter + " primes.";
+}
+
+}
+}
+
+function primTest1(){
+document.getElementById('container2').innerHTML = "<input id='input1' onkeypress = 'primTest2(event)' /><div id='out'></div>";
+document.getElementById('container2').innerHTML += "<button id='back' onclick='location.reload()'>Back</button>";
+}
+
+function primTest2(e){
+if(e.keyCode == 13){
+var x = document.getElementById('input1').value;
+document.getElementById('out').innerHTML = x;
+
+if(x % 30 == 1 || x % 30 == 7 || x % 30 == 11 || x % 30 == 13 || x % 30 == 17 || x % 30 == 19 || x % 30 == 23 || x % 30 == 29){
+var primeChecker = 0;
+var x1 = x;
+for(var n = 2; n <= x1; n++){
+if(x1 % n == 0){
+primeChecker++;
+x1 = x1 / n;
+n--;
+}
+}
+if(primeChecker == 1){
+document.getElementById('out').innerHTML += "<br>Prime.";
+}
+else{
+document.getElementById('out').innerHTML += "<br>Not prime.";
+}
+}
+
+else if(x == 2 || x == 3 || x == 5){
+document.getElementById('out').innerHTML += "<br>Prime.";
+}
+
+else{
+document.getElementById('out').innerHTML += "<br>Not prime.";
+}
+
+}
+}
+
+function factorize1(){
+document.getElementById('container2').innerHTML = "<input id='input1' onkeypress = 'factorize2(event)' /><div id='out'></div>";
+document.getElementById('container2').innerHTML += "<button id='back' onclick='location.reload()'>Back</button>";
+}
+
+function factorize2(e){
+if(e.keyCode == 13){
+var x = document.getElementById('input1').value;
+var xa = x;
+//document.getElementById('input1').innerHTML = "";
+document.getElementById('out').innerHTML = "";
+if(x >= 2){
+var primeCounter = 0;
+var n = 2;
+for(n; n <= x; n++){
+if(x % n == 0){
+primeCounter++;
+document.getElementById('out').innerHTML += n;
+x = x / n;
+if(x != 1){
+document.getElementById('out').innerHTML += "*";
+}
+n--;
+}
+}
+if(primeCounter == 1){
+document.getElementById('out').innerHTML = "Prime";
+}
+}
+else{
+document.getElementById('out').innerHTML = "Improper data.";
+}
+}
+}
+
+</script>
+</body>
+</html>
